@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>1번</h1>
+    {% for menu in menus %}
+	    <p>{{ menu }}</p>
+    {% endfor %}
+    <hr>
+    <h1>2번</h1>
+    {% for post in posts %}
+	    <p>{{ forloop.counter0 }}번 글: {{ post }}</p>
+    {% endfor %}
+    <hr>
+    <h1>3번</h1>
+    {% for user in users %}
+    	<p>{{ user }}</p>
+    {% empty %}
+	    <p>현재 가입한 유저가 없습니다.</p>
+    {% endfor %}
+    <hr>
+    <h1>4번</h1>
+    {% if forloop.first %}
+	    <p>첫 번째 반복문 입니다.</p>
+    {% else %}
+	    <p>첫 번째 반복문이 아닙니다.</p>
+    {% endif %}
+    <hr>
+    <h1>5번</h1>
+    <p>{{ 'hello'|length }}</p>
+    <p>{{ 'my name is tom'|title }}</p>
+    <hr>
+    <h1>6번</h1>
+    {{ today|date:"Y년 m월 d일 (D) A h:i" }}
+</body>
+</html>
