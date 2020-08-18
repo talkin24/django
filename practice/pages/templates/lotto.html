@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>로또 당첨 횟수를 알아보자.</h1>
+    <hr>
+    <h3>이번 회차 당첨 번호: {{ selects }} + {{ bonus }}</h3>
+    <ul>
+        <li>1등 : {{ lucky.0 }}번 </li>
+        <li>2등 : {{ lucky.1 }}번 </li>
+        <li>3등 : {{ lucky.2 }}번 </li>
+        <li>4등 : {{ lucky.3 }}번 </li>
+        <li>5등 : {{ lucky.4 }}번 </li>
+        <li>꽝 : {{ lucky.5 }}번 </li>
+    </ul>
+</body>
+</html>
