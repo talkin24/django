@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CRUD with ModelForm</h1>
+  <hr>
+  <h2>Edit</h2>
+  <form action="{% url 'articles:update' article.pk %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit">
+  </form>
+  <a href="{% url 'articles:detail' article.pk %}">BACK</a>
+{% endblock content %}

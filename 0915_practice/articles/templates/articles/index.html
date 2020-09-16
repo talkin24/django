@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CRUD with ModelForm</h1>
+  <hr>
+  <h2>Articles</h2>
+  <a href="{% url 'articles:create' %}">New</a>
+  <hr>
+  {% for article in articles %}
+    <p><h2> {{ article.pk }} </h2></p>
+    <p><h2> {{ article.title }} </h2></p> 
+    <a href="{% url 'articles:detail' article.pk %}">DETAIL</a>
+    <hr>
+  {% endfor %}
+{% endblock content %}
