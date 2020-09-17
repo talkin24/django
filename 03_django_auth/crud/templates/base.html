@@ -10,8 +10,13 @@
   <div class="container">
     <h3>Hello, {{ user.username }}</h3>
     {% if request.user.is_authenticated %}
-      <a href="{% url 'accounts:update' %}">회원정보 수정</a>
+      <a href="{% url 'accounts:update' %}">회원정보수정</a>
+      <a href="{% url 'accounts:change_password' %}">비밀번호변경</a>
       <a href="{% url 'accounts:logout' %}">Logout</a>
+      <form action="{% url 'accounts:delete' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="delete">
+      </form>
     {% else %}  
       <a href="{% url 'accounts:signup' %}">Signup</a>
       <a href="{% url 'accounts:login' %}">Login</a>
