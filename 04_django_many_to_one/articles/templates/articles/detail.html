@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2 class="text-center">DETAIL</h2>
+  <h3>{{ article.pk }} 번째 글</h3>
+  <hr>
+  <p>제목: {{ article.title }}</p>
+  <p>내용: {{ article.content }}</p>
+  <p>작성 시각: {{ article.created_at }}</p>
+  <p>수정 시각: {{ article.updated_at }}</p>
+  <hr>
+  <a href="{% url 'articles:update' article.pk %}">UPDATE</a><br>
+  <form action="{% url 'articles:delete' article.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="DELETE">
+  </form>
+  <a href="{% url 'articles:index' %}">[back]</a>
+  <hr>
+  <h4>댓글 목록</h4>
+  {% if comments %}
+    <p>{{ comments|length }} 개의 댓글이 있습니다.</p>
+  {% endif %}
+  {% comment %} {{ comments.count }} 개 {% endcomment %}
+  {% for comment in comments %}
+    <li>{{ comment.content }}
+      <form action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="POST" class="d-inline">
+        {% csrf_token %}
+        <input type="submit" value='DELETE'>
+      </form>
+    </li>
+  {% empty %} 
+  <p>댓글이 아직 없어요.</p>
+  {% endfor %}
+  <hr>
+  <h4>댓글 작성</h4>
+  <hr>
+  <form action="{% url 'articles:comments_create' article.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <input type="submit">
+  </form>
+{% endblock  %}
