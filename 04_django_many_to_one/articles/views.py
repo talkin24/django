@@ -19,7 +19,9 @@ def create(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST) 
         if form.is_valid():
-            article = form.save()
+            article = form.save(commit=False)
+            article.user = request.user
+            article.save()
             return redirect('articles:detail', article.pk)
     else:
         form = ArticleForm()
@@ -47,13 +49,17 @@ def detail(request, pk):
 def update(request, pk):
     # article = Article.objects.get(pk=pk)
     article = get_object_or_404(Article, pk=pk)
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('articles:detail', article.pk)
+    # 수정하는 유저와, 게시글 작성 유저가 같은가?
+    if request.user == article.user:
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, instance=article)
+            if form.is_valid():
+                form.save()
+                return redirect('articles:detail', article.pk)
+        else:
+            form = ArticleForm(instance=article)
     else:
-        form = ArticleForm(instance=article)
+        return redirect('articles:index')
     context = {
         'form': form,
         'article': article,
@@ -66,32 +72,38 @@ def delete(request, pk):
     if request.user.is_authenticated:
         # article = Article.objects.get(pk=pk)
         article = get_object_or_404(Article, pk=pk)
-        article.delete()
-    return redirect('articles:index')
+        if request.user == article.user:
+            article.delete()
+            return redirect('articles:index')
+    return redirect('articles:detail', article.pk)
 
 
 @require_POST
 def comments_create(request, pk):
-    article = Article.objects.get(pk=pk)
-    comment_form = CommentForm(request.POST)
-    if comment_form.is_valid():
-        # Create, but don't save the new comment instance.
-        comment = comment_form.save(commit=False) # 아직 DB에 작성하지말고, 인스턴스 생성은 하되 잠시 대기
-        comment.article = article
-        comment.save()
-        return redirect('articles:detail', article.pk)
-    context = {
-        'comment_form': comment_form,
-        'article': article, # 에러메시지 정상적으로 출력되도록
-    }
-    return render(request, 'articles/detail.html', context)
+    # article = Article.objects.get(pk=pk)
+    if request.user.is_authenticated:
+        article = get_object_or_404(Article, pk=pk)
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            # Create, but don't save the new comment instance.
+            comment = comment_form.save(commit=False) # 아직 DB에 작성하지말고, 인스턴스 생성은 하되 잠시 대기
+            comment.article = article
+            comment.user = request.user # 댓글에 유저 정보 입력
+            comment.save()
+            return redirect('articles:detail', article.pk)
+        context = {
+            'comment_form': comment_form,
+            'article': article, # 에러메시지 정상적으로 출력되도록
+        }
+        return render(request, 'articles/detail.html', context)
+    return redirect('accounts:login')
 
 
 @require_POST
 def comments_delete(request, article_pk, comment_pk):
     # comment = Comment.objects.get(pk=comment_pk)
-    comment = get_object_or_404(Comment, pk=comment_pk)
-    # article = comment.article
-    comment.delete()
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, pk=comment_pk)
+        if request.user == comment.user:
+            comment.delete()
     return redirect('articles:detail', article_pk)
-    # return redirect('articles:detail', article,pk)

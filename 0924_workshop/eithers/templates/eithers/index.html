@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center">Eithers</h1>
+    <a href="{% url 'eithers:create' %}">NEW</a>
+  <hr>
+  {% for either in eithers %}
+    <p>투표 번호: {{ either.pk }}</p>
+    <p>투표 제목: {{ either.title }}</p>
+    <h2>주제: {{ either.topic }}</h2>
+      <h3>"{{ either.content_left }}" VS. "{{ either.content_right }}"</h3>
+    
+    <a href="{% url 'eithers:detail' either.pk %}">[투표하러가기]</a>
+    <hr>
+  {% endfor %}
+{% endblock %}

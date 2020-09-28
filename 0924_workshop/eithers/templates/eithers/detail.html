@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2 class="text-center">VOTE!</h2>
+  <h3>{{ either.pk }} 번째 투표</h3>
+  <hr>
+  <p>투표 제목: {{ either.title }}</p>
+  <h4>주제: {{ either.topic }}</h4>
+  <br>
+  <h3>"{{ either.content_left }}" VS. "{{ either.content_right }}"</h3>
+  <br>
+  <p>작성 시각: {{ either.created_at }}</p>
+  <p>수정 시각: {{ either.updated_at }}</p>
+  <hr>  
+  <a href="{% url 'eithers:index' %}">[back]</a>
+  <a href="{% url 'eithers:random' %}">[random]</a>
+  <hr>
+  <h4>댓글 목록</h4>
+  {% if comments|length %}
+    <p>{{ comments|length }} 개의 댓글이 있습니다.</p>
+    <h4>left비율: {{ left_num }}% vs. right비율: {{ right_num }}%</h4>
+    <p></p>
+  {% endif %}
+  {% for comment in comments %}
+    <li>
+      {{ comment.vote }}
+    </li>
+  {% empty %}
+    <p>투표해주세요!</p>
+  {% endfor %}
+  <hr>
+  <h4>투표해주세요!</h4>
+  <form action="{% url 'eithers:comments_create' either.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <input type="submit">
+  </form>
+{% endblock  %}
